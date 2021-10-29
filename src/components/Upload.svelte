@@ -1,8 +1,10 @@
 <script>
   let showError = false;
   let showSuccess = false;
+  let showImage = false;
   let errorMsg="";
   let successMsg="";
+  let src="";
   const upload = (e)=>{
     const formdata = new FormData(e.target);
     if(formdata.get("upload").size === 0){
@@ -22,6 +24,8 @@
     .then((data)=>{
       console.log(data.msg);
       if(!data.status){
+        showImage = true;
+        src = URL.createObjectURL(formdata.get("upload"));
         errorMsg = "";
         successMsg = data.msg;
         showSuccess = true;
@@ -67,6 +71,10 @@
       {errorMsg || successMsg}
     </p>
   </div>
+  {/if}
+
+  {#if showImage}
+    <img {src} alt="img" width="400">
   {/if}
 
 </div>
