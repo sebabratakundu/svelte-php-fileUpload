@@ -50,6 +50,12 @@ npm run build
 You can run the newly built app with `npm run start`. This uses [sirv](https://github.com/lukeed/sirv), which is included in your package.json's `dependencies` so that the app will work when you deploy to platforms like [Heroku](https://heroku.com).
 
 
+## File Upload App Installation
+
+1. The php file need to copied in the localserver
+2. Make sure to replace the `upload` property value to your api endpont in `endpoints.js`
+
+
 ## Single-page app mode
 
 By default, sirv will only respond to requests that match files in `public`. This is to maximise compatibility with static fileservers, allowing you to deploy your app anywhere.
