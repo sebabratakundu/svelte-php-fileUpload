@@ -25,6 +25,11 @@
     die;
   }
 
+  // check folder exist or not
+  if(!file_exists("storage")){
+    mkdir("storage");
+  }
+
   // upload file in server
   $random = rand(1000,999999);
   if(!move_uploaded_file($file["tmp_name"],"storage/".strval($random).$file["name"])){

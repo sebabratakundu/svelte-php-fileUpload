@@ -1,17 +1,25 @@
 <script>
+  import endpoints from "../js/endpoints";
+
   let showError = false;
   let showSuccess = false;
   let showImage = false;
+  let disabled = false;
   let errorMsg="";
   let successMsg="";
   let src="";
+  let submitBtnTxt = "Upload";
   const upload = (e)=>{
+    submitBtnTxt = "Please wait...";
+    disabled = true;
     const formdata = new FormData(e.target);
     if(formdata.get("upload").size === 0){
       showSuccess = false;
       showError = true;
       successMsg = "";
       errorMsg = "please upload file";
+      submitBtnTxt = "Upload";
+      disabled = false;
       return;
     }
 
@@ -20,9 +28,10 @@
       body : formdata
     }
 
-    ajax("http://localhost/api/upload.php",option)
+    ajax(endpoints.upload,option)
     .then((data)=>{
-      console.log(data.msg);
+      submitBtnTxt = "Upload";
+      disabled = false;
       if(!data.status){
         showImage = true;
         src = URL.createObjectURL(formdata.get("upload"));
@@ -38,6 +47,8 @@
       showError = true;      
     })
     .catch((error)=>{
+      submitBtnTxt = "Upload";
+      disabled = false;
       successMsg = "";
       showSuccess = false;
       errorMsg = error;
@@ -61,7 +72,7 @@
         <h3>Drop File Here</h3>
       </div>
     </div>
-    <button type="submit" class="submit-btn">Upload</button>
+    <button type="submit" class="submit-btn" {disabled} class:disabled={disabled}>{submitBtnTxt}</button>
   </form>
 
   {#if showError || showSuccess}
@@ -113,6 +124,10 @@
     border : none;
     padding : 10px;
     margin-top: 20px;
+  }
+
+  .disabled{
+    background-color: #e8b28c;
   }
 
   .error-notice{
