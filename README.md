@@ -52,8 +52,8 @@ You can run the newly built app with `npm run start`. This uses [sirv](https://g
 
 ## File Upload App Installation
 
-1. The php file need to copied in the localserver
-2. Make sure to replace the `upload` property value to your api endpont in `endpoints.js`
+1. The `upload.php` file inside the `back-end` folder need to copied in your localserver.
+2. Make sure to replace the `upload` property value to your api endpont in `endpoints.js`.
 
 
 ## Single-page app mode
