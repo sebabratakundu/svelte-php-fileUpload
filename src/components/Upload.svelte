@@ -2,68 +2,28 @@
   import endpoints from "../js/endpoints";
 
   let showError = false;
-  let showSuccess = false;
-  let errorMsg="";
-  let successMsg="";
-  let ajaxOption = {
-    submitBtnTxt : "Upload",
-    disabled : false,
-    src : "",
-    showImage : false
-  };
-
-  const upload = (e)=>{
-    ajaxOption.submitBtnTxt = "Please wait...";
-    ajaxOption.disabled = true;
-    const formdata = new FormData(e.target);
+  let msg ="";
+  let formdata;
+  let isSubmited = false;
+  const upload = async (e)=>{
+    formdata = new FormData(e.target);
     if(formdata.get("upload").size === 0){
-      showSuccess = false;
       showError = true;
-      successMsg = "";
-      errorMsg = "please upload file";
-      ajaxOption.submitBtnTxt = "Upload";
-      ajaxOption.disabled = false;
+      msg = "please upload file";
       return;
     }
+    isSubmited = true;
+    showError = false;
+  };
 
-    const option = {
-      method : "post",
+  const ajax = async () => {
+    const response = await fetch(endpoints.upload,{
+      method : "POST",
       body : formdata
-    }
-
-    ajax(endpoints.upload,option)
-    .then((data)=>{
-      ajaxOption.submitBtnTxt = "Upload";
-      ajaxOption.disabled = false;
-      if(!data.status){
-        ajaxOption.showImage = true;
-        ajaxOption.src = URL.createObjectURL(formdata.get("upload"));
-        errorMsg = "";
-        successMsg = data.msg;
-        showSuccess = true;
-        return;
-      }
-
-      successMsg = "";
-      showSuccess = false;
-      errorMsg = data.msg;
-      showError = true;      
-    })
-    .catch((error)=>{
-      ajaxOption.submitBtnTxt = "Upload";
-      ajaxOption.disabled = false;
-      successMsg = "";
-      showSuccess = false;
-      errorMsg = error;
-      showError = true;
     });
+    const result =  await response.json();
+    return result;
   };
-
-  const ajax = async (url,option) => {
-    const response = await fetch(url,option);
-    return response.json();
-  };
-
 </script>
 
 <div class="upload-wrapper">
@@ -75,20 +35,48 @@
         <h3>Drop File Here</h3>
       </div>
     </div>
-    <button type="submit" class="submit-btn" disabled={ajaxOption.disabled} class:disabled={ajaxOption.disabled}>{ajaxOption.submitBtnTxt}</button>
+
+    {#if isSubmited}
+    {#await ajax()}
+    <button type="submit" class="submit-btn disabled" disabled>Please wait...</button>
+    {:then data} 
+      <button type="submit" class="submit-btn">Upload</button>
+      {#if !data.status}
+      <div class="error-notice success">
+        <p style="font-weight: 600;">
+          <i class="fa fa-exclamation-circle"></i>
+          {data.msg}
+        </p>
+      </div>  
+      <img src={URL.createObjectURL(formdata.get("upload"))} alt="img" width="400">
+      {:else}
+      <div class="error-notice">
+        <p style="font-weight: 600;">
+          <i class="fa fa-exclamation-circle"></i>
+          {data.msg}
+        </p>
+      </div>  
+      {/if}
+    {:catch error}
+    <div class="error-notice">
+      <p style="font-weight: 600;">
+        <i class="fa fa-exclamation-circle"></i>
+        {error.msg}
+      </p>
+    </div>  
+    {/await}
+    {:else}
+    <button type="submit" class="submit-btn">Upload</button>      
+    {/if}
   </form>
 
-  {#if showError || showSuccess}
-  <div class="error-notice" class:success={showSuccess}>
+  {#if showError}
+  <div class="error-notice">
     <p style="font-weight: 600;">
       <i class="fa fa-exclamation-circle"></i>
-      {errorMsg || successMsg}
+      {msg}
     </p>
   </div>
-  {/if}
-
-  {#if ajaxOption.showImage && ajaxOption.src != ""}
-    <img src={ajaxOption.src} alt="img" width="400">
   {/if}
 
 </div>
