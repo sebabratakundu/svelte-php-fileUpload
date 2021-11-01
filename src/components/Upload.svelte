@@ -1,6 +1,6 @@
 <script>
   import endpoints from "../js/endpoints";
-
+  import Alert from "./Alert.svelte";
   let showError = false;
   let msg ="";
   let formdata;
@@ -42,28 +42,13 @@
     {:then data} 
       <button type="submit" class="submit-btn">Upload</button>
       {#if !data.status}
-      <div class="error-notice success">
-        <p style="font-weight: 600;">
-          <i class="fa fa-exclamation-circle"></i>
-          {data.msg}
-        </p>
-      </div>  
+      <Alert msg={data.msg} success={true} /> 
       <img src={URL.createObjectURL(formdata.get("upload"))} alt="img" width="400">
       {:else}
-      <div class="error-notice">
-        <p style="font-weight: 600;">
-          <i class="fa fa-exclamation-circle"></i>
-          {data.msg}
-        </p>
-      </div>  
+      <Alert msg={data.msg} />
       {/if}
     {:catch error}
-    <div class="error-notice">
-      <p style="font-weight: 600;">
-        <i class="fa fa-exclamation-circle"></i>
-        {error.msg}
-      </p>
-    </div>  
+    <Alert msg={error.msg} />  
     {/await}
     {:else}
     <button type="submit" class="submit-btn">Upload</button>      
@@ -71,12 +56,7 @@
   </form>
 
   {#if showError}
-  <div class="error-notice">
-    <p style="font-weight: 600;">
-      <i class="fa fa-exclamation-circle"></i>
-      {msg}
-    </p>
-  </div>
+  <Alert {msg} />
   {/if}
 
 </div>
@@ -119,23 +99,5 @@
 
   .disabled{
     background-color: #e8b28c;
-  }
-
-  .error-notice{
-    width: 30%;
-    margin: 0 auto;
-    background-color: #FFF5F8;
-    color: #F1416C;
-    padding : 10px 0;
-    padding-left: 20px;
-    text-align: left;
-    margin-top: 20px;
-    border-left: 4px solid #F1416C;
-  }
-
-  .success{
-    background-color: #E8FFF3 !important;
-    color: #5AD8D1 !important;
-    border-left: 4px solid #5AD8D1;
   }
 </style>
