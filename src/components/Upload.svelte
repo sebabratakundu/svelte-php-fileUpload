@@ -3,23 +3,26 @@
 
   let showError = false;
   let showSuccess = false;
-  let showImage = false;
-  let disabled = false;
   let errorMsg="";
   let successMsg="";
-  let src="";
-  let submitBtnTxt = "Upload";
+  let ajaxOption = {
+    submitBtnTxt : "Upload",
+    disabled : false,
+    src : "",
+    showImage : false
+  };
+
   const upload = (e)=>{
-    submitBtnTxt = "Please wait...";
-    disabled = true;
+    ajaxOption.submitBtnTxt = "Please wait...";
+    ajaxOption.disabled = true;
     const formdata = new FormData(e.target);
     if(formdata.get("upload").size === 0){
       showSuccess = false;
       showError = true;
       successMsg = "";
       errorMsg = "please upload file";
-      submitBtnTxt = "Upload";
-      disabled = false;
+      ajaxOption.submitBtnTxt = "Upload";
+      ajaxOption.disabled = false;
       return;
     }
 
@@ -30,11 +33,11 @@
 
     ajax(endpoints.upload,option)
     .then((data)=>{
-      submitBtnTxt = "Upload";
-      disabled = false;
+      ajaxOption.submitBtnTxt = "Upload";
+      ajaxOption.disabled = false;
       if(!data.status){
-        showImage = true;
-        src = URL.createObjectURL(formdata.get("upload"));
+        ajaxOption.showImage = true;
+        ajaxOption.src = URL.createObjectURL(formdata.get("upload"));
         errorMsg = "";
         successMsg = data.msg;
         showSuccess = true;
@@ -47,8 +50,8 @@
       showError = true;      
     })
     .catch((error)=>{
-      submitBtnTxt = "Upload";
-      disabled = false;
+      ajaxOption.submitBtnTxt = "Upload";
+      ajaxOption.disabled = false;
       successMsg = "";
       showSuccess = false;
       errorMsg = error;
@@ -72,7 +75,7 @@
         <h3>Drop File Here</h3>
       </div>
     </div>
-    <button type="submit" class="submit-btn" {disabled} class:disabled={disabled}>{submitBtnTxt}</button>
+    <button type="submit" class="submit-btn" disabled={ajaxOption.disabled} class:disabled={ajaxOption.disabled}>{ajaxOption.submitBtnTxt}</button>
   </form>
 
   {#if showError || showSuccess}
@@ -84,8 +87,8 @@
   </div>
   {/if}
 
-  {#if showImage}
-    <img {src} alt="img" width="400">
+  {#if ajaxOption.showImage && ajaxOption.src != ""}
+    <img src={ajaxOption.src} alt="img" width="400">
   {/if}
 
 </div>

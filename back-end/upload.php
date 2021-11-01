@@ -26,13 +26,14 @@
   }
 
   // check folder exist or not
-  if(!file_exists("storage")){
+  $folder = __DIR__."/storage";
+  if(!file_exists($folder)){
     mkdir("storage");
   }
 
   // upload file in server
   $random = rand(1000,999999);
-  if(!move_uploaded_file($file["tmp_name"],"storage/".strval($random).$file["name"])){
+  if(!move_uploaded_file($file["tmp_name"],$folder."/".strval($random).$file["name"])){
     $response = array(
       "status" => 500,
       "msg" => "failed to upload"
@@ -46,5 +47,3 @@
     "msg" => "image upload success"
   );
   echo json_encode($response);
-
-?>

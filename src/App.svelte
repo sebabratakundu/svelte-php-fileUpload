@@ -4,7 +4,7 @@
 </script>
 
 <main>
-	<h1>File Upload</h1>
+	<h1>Drop your image or click to upload image</h1>
 	<Upload/>
 </main>
 
